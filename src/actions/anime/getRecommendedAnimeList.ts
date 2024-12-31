@@ -8,12 +8,17 @@ export const getRecommendedAnimeList = async ({
 }: {
   animeId: string | number;
 }) => {
-  const res = await getAnimeApi.get<TrendingAnimeRes>(
-    `/recommendations/${animeId}`,
-    {
-      params: { limit: 20 },
-    },
-  );
+  try {
+    const { data } = await getAnimeApi.get<TrendingAnimeRes>(
+      `/recommendations/${animeId}`,
+      {
+        params: { limit: 20 },
+      },
+    );
 
-  return res.data;
+    return { data };
+  } catch (error) {
+    console.log(error);
+    return { error: "Something went wrong" };
+  }
 };

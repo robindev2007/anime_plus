@@ -8,7 +8,7 @@ export default async function Home() {
 
   return (
     <div className="space-y-3 px-2 py-2">
-      <HeroCarousel animeList={tradingAnime.results ?? []} />
+      <HeroCarousel animeList={tradingAnime.data?.results ?? []} />
       <Container className="p-0">
         <TrendingAnimeList />
       </Container>

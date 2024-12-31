@@ -12,13 +12,18 @@ export const getAnimeSearchResult = async ({
   page: number;
   limit: number;
 }) => {
-  const { data } = await getAnimeApi.get<AnimeSearchResultRes>("/search", {
-    params: {
-      q: query,
-      p: page,
-      limit,
-    },
-  });
+  try {
+    const { data } = await getAnimeApi.get<AnimeSearchResultRes>("/search", {
+      params: {
+        q: query,
+        p: page,
+        limit,
+      },
+    });
 
-  return data;
+    return { data };
+  } catch (error) {
+    console.log(error);
+    return { error: "Something went wrong" };
+  }
 };

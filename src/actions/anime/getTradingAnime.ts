@@ -6,9 +6,14 @@ import { TrendingAnimeRes } from "@/types/anime";
 export const getTradingAnime = async (
   { limit }: { limit?: number } = { limit: 10 },
 ) => {
-  const res = await getAnimeApi.get<TrendingAnimeRes>("/trending", {
-    params: { limit },
-  });
+  try {
+    const { data } = await getAnimeApi.get<TrendingAnimeRes>("/trending", {
+      params: { limit },
+    });
 
-  return res.data;
+    return { data };
+  } catch (error) {
+    console.log(error);
+    return { error: "Something went wrong" };
+  }
 };
