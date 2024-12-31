@@ -22,7 +22,7 @@ function HeroCarousel({
         onSwiper={(swiper) => console.log(swiper)}
       >
         {animeList.map((anime) => (
-          <SwiperSlide>
+          <SwiperSlide key={anime.id}>
             <AnimeSlide anime={anime} />
           </SwiperSlide>
         ))}
