@@ -37,7 +37,7 @@ function SearchAnime() {
       query,
     });
 
-    setAnimeResults(res.results ?? []);
+    setAnimeResults(res.data?.results ?? []);
     setLoading(false);
   };
 
