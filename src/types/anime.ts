@@ -1,37 +1,112 @@
-export interface TrendingAnimeRes {
-  code: number;
-  message: string;
-  page: Page;
-  results: AnimeT[];
+// streams
+export type AnimeStreamRes = {
+  streams: {
+    title: string;
+    data: {
+      name: string;
+      sources: Source[];
+    }[];
+  }[];
+  intro: Intro | undefined;
+  outro: Outro | undefined;
+  subtitles: Subtitle[];
+};
+
+export interface Intro {
+  start: number;
+  end: number;
 }
 
-interface Page {
+export interface Outro {
+  start: number;
+  end: number;
+}
+
+export interface Source {
+  url: string;
+  isM3U8: boolean;
+  type: string;
+}
+
+export interface Subtitle {
+  url: string;
+  lang: string;
+}
+
+export interface TrendingAnimeRes {
   currentPage: number;
   hasNextPage: boolean;
-  lastPage: number;
-  perPage: number;
-  total: number;
+  totalPages: number;
+  results: TrendingAnime[];
+}
+
+export interface TrendingAnime {
+  id: string;
+  title: string;
+  url: string;
+  image: string;
+  duration: string;
+  japaneseTitle: string;
+  type: string;
+  nsfw: boolean;
+  sub: number;
+  dub: number;
+  episodes: number;
+}
+
+export interface SingleAnimeInfoRes {
+  id: string;
+  title: string;
+  malID: number;
+  alID: number;
+  japaneseTitle: string;
+  image: string;
+  description: string;
+  type: string;
+  url: string;
+  recommendations: Recommendation[];
+  relatedAnime: [];
+  subOrDub: string;
+  hasSub: boolean;
+  hasDub: boolean;
+  totalEpisodes: number;
+  episodes: Episode[];
+}
+
+export interface Recommendation {
+  id: string;
+  title: string;
+  url: string;
+  image: string;
+  duration: string;
+  japaneseTitle: string;
+  type: string;
+  nsfw: boolean;
+  sub: number;
+  dub: number;
+  episodes: number;
+}
+
+export interface Episode {
+  id: string;
+  number: number;
+  title: string;
+  isFiller: boolean;
+  url: string;
 }
 
 export interface AnimeT {
-  averageScore?: number;
-  bannerImage?: string;
-  coverImage: CoverImage;
-  description: string;
-  duration?: number;
-  episodes?: number;
-  format: string;
-  genres: string[];
-  id: number;
-  idMal: number;
-  meanScore?: number;
-  nextAiringEpisode?: NextAiringEpisode;
-  season: string;
-  seasonYear: number;
-  status: string;
-  tags: Tag[];
-  title: Title;
-  trailer?: Trailer;
+  id: string;
+  title: string;
+  url: string;
+  image: string;
+  duration: string;
+  japaneseTitle: string;
+  type: string;
+  nsfw: boolean;
+  sub: number;
+  dub: number;
+  episodes: number;
 }
 
 interface CoverImage {
@@ -39,12 +114,6 @@ interface CoverImage {
   extraLarge: string;
   large: string;
   medium: string;
-}
-
-interface NextAiringEpisode {
-  airingAt: number;
-  episode: number;
-  timeUntilAiring: number;
 }
 
 interface Tag {
@@ -178,16 +247,6 @@ export interface Episode {
   title: string;
   id: string;
   episode: number;
-}
-
-// streams
-
-export interface AnimeStreamRes {
-  info: Info;
-  stream: Stream;
-  iframe: Iframe[];
-  plyr: Plyr;
-  nspl: Nspl;
 }
 
 export interface Info {

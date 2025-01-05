@@ -1,4 +1,3 @@
-import { getAnimeEpisodes } from "@/actions/anime/getAnimeEpisodes";
 import { getAnimeInfo } from "@/actions/anime/getAnimeInfo";
 import { getAnimeStream } from "@/actions/anime/getAnimeStream";
 import Container from "@/components/Container";
@@ -16,48 +15,35 @@ async function WatchPage({
   const { animeId } = await params;
   const ep = (await searchParams).ep ?? 1;
 
-  const info = await getAnimeInfo({
+  const { data: animeData } = await getAnimeInfo({
     animeId,
   });
 
-  if (!info.data) return notFound();
+  if (!animeData) return notFound();
 
-  const episodes = await getAnimeEpisodes({
-    animeId: info.data.id_provider.idGogo,
-  });
+  const currentEpisode = animeData.episodes[+ep - 1];
 
-  const subStream = await getAnimeStream({
-    gogoId: info.data.id_provider.idGogo,
-    epId: ep,
-  });
+  console.log(currentEpisode);
 
-  const dubStream = await getAnimeStream({
-    gogoId: info.data.id_provider.idGogoDub,
-    epId: ep,
-  });
-
-  console.log(subStream, dubStream);
-
-  if (!dubStream && !subStream) return null;
+  const { data: streams } = await getAnimeStream(currentEpisode.id);
 
   return (
     <div className="relative overflow-hidden lg:p-5">
       <div
-        className="absolute left-1/2 top-0 -z-10 hidden h-full w-full -translate-x-1/2 opacity-35 grayscale-[40%] lg:flex"
+        className="absolute left-1/2 top-0 -z-10 h-full w-full -translate-x-1/2 opacity-35 grayscale-[40%] lg:flex"
         style={{
-          backgroundImage: `url(${info.data.coverImage.large})`,
+          backgroundImage: `url(${animeData?.image})`,
           filter: "blur(80px)",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
-          // opacity: 0.5,
         }}
       />
       <Container className="p-0">
         <AnimeWatchPageData
-          animeInfo={info.data}
-          episodes={episodes.data ? episodes.data.episodes?.toReversed() : []}
-          initialSubStream={subStream.data ?? undefined}
-          initialDubStream={dubStream.data ?? undefined}
+          animeInfo={animeData}
+          episodes={animeData.episodes || []}
+          initialStreams={streams || undefined}
+          initialEpisode={currentEpisode}
         />
       </Container>
     </div>
@@ -65,3 +51,13 @@ async function WatchPage({
 }
 
 export default WatchPage;
+
+// {streams?.streams.map((stream) =>
+//   stream.data.map((source) =>
+//     source.sources.map((s) => (
+//       <div>
+//         <Player videoUrl={s.url} key={s.url} />
+//       </div>
+//     )),
+//   ),
+// )}

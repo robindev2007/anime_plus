@@ -65,11 +65,14 @@ const Player = ({
 
   const videoUrlWithProxy = `https://m3u8-proxy-dnuse.amvstr.me/${videoUrl}`;
 
+  console.log(videoUrlWithProxy);
+
   return (
     <div className="h-fit bg-muted">
       <div className={cn("aspect-video overflow-hidden bg-muted")}>
         <MediaPlayer
-          autoPlay={settings.autoPlay}
+          autoPlay={true}
+          // autoPlay={settings.autoPlay}
           storage={"player-state"}
           className="aspect-video !rounded-none !border-none"
           src={loading ? "" : videoUrlWithProxy}

@@ -3,7 +3,7 @@ import AnimeList from "@/components/AnimeList";
 import RecommendedAnimeList from "@/components/AnimeList/RecommendedAnimeList";
 import Container from "@/components/Container";
 import AnimePageData from "@/features/Anime/AnimePageData";
-import { AnimeInfoResT } from "@/types/anime";
+import { SingleAnimeInfoRes } from "@/types/anime";
 import React from "react";
 
 async function SingleAnimePage({
@@ -17,7 +17,7 @@ async function SingleAnimePage({
 
   return (
     <div>
-      <AnimePageData data={data.data as AnimeInfoResT} />
+      <AnimePageData data={data.data as SingleAnimeInfoRes} />
 
       <div className="bg-background">
         <Container>
@@ -26,12 +26,14 @@ async function SingleAnimePage({
               <strong>Related Anime</strong>
             </p>
             <AnimeList
-              animeList={(data.data?.relation.slice(0, 20) as []) ?? []}
+              animeList={(data.data?.recommendations.slice(0, 20) as []) ?? []}
             />
           </div>
           {/* Recommended anime's */}
           <div className="p-3">
-            <RecommendedAnimeList animeId={data?.data?.id as number} />
+            <RecommendedAnimeList
+              animeList={data.data?.recommendations ?? []}
+            />
           </div>
         </Container>
       </div>

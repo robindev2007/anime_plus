@@ -1,19 +1,14 @@
 import Container from "@/components/Container";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Dot from "@/components/ui/dot";
-import { AnimeInfoResT } from "@/types/anime";
+import { SingleAnimeInfoRes } from "@/types/anime";
 import Image from "next/image";
 import React from "react";
-import { FaPlus } from "react-icons/fa6";
+import { FaClosedCaptioning, FaMicrophone, FaPlus } from "react-icons/fa6";
 import WatchNowButton from "./WatchNowButton";
 
-function AnimePageData({ data }: { data: AnimeInfoResT }) {
-  const title =
-    data.title.english ||
-    data.title.romaji ||
-    data.title.userPreferred ||
-    data.title.userPreferred;
+function AnimePageData({ data }: { data: SingleAnimeInfoRes }) {
+  const title = data.title || data.japaneseTitle;
 
   return (
     <Container className="space-y-2 p-0">
@@ -22,7 +17,7 @@ function AnimePageData({ data }: { data: AnimeInfoResT }) {
           <div
             className="absolute left-1/2 top-0 -z-10 h-full w-full -translate-x-1/2 opacity-35 grayscale"
             style={{
-              backgroundImage: `url(${data.coverImage.large})`,
+              backgroundImage: `url(${data.image})`,
               filter: "blur(40px)",
               backgroundRepeat: "no-repeat",
               backgroundSize: "cover",
@@ -30,38 +25,45 @@ function AnimePageData({ data }: { data: AnimeInfoResT }) {
           />
           <div className="z-10">
             <Image
-              src={
-                data.coverImage.extraLarge ||
-                data.coverImage.large ||
-                data.coverImage.medium
-              }
+              src={data.image}
               height={2000}
               width={2000}
-              alt={title}
+              alt={data.title}
               className="aspect-[200/300] max-w-40 overflow-hidden object-cover md:max-w-[14rem]"
             />
           </div>
           <div className="flex w-full flex-col items-center justify-center gap-3 md:items-start md:space-y-5">
             <p className="text-center text-xl font-semibold md:max-w-[70%] md:text-start md:text-3xl">
-              {title} ({data.title.native})
+              {title}
             </p>
             <div className="flex items-center justify-center gap-2 text-sm font-semibold">
               <div className="flex gap-0.5 overflow-hidden rounded-sm">
-                <div className="w-fit bg-foreground px-2 text-background">
-                  {"HD"}
+                {/* Total sub */}
+                <div className="flex w-fit items-center gap-0.5 bg-primary-2 p-2 py-1 text-xs font-bold text-primary-foreground-2">
+                  <FaClosedCaptioning />
+                  <p className="leading-[10px]"> {data.hasSub && "sub"}</p>
                 </div>
-                <div className="w-fit bg-primary-2 px-2 text-primary-foreground-2">
-                  {data.dub ? "Dub" : "Sub"}
+
+                {/* Total dub */}
+                <div className="flex w-fit items-center gap-0.5 bg-primary-3 p-2 py-1 text-xs font-bold text-primary-foreground-3">
+                  <FaMicrophone className="-mt-0.5" />
+                  <p className="leading-[10px]">{data.hasDub && "dub"}</p>
                 </div>
+
+                {/* Total ep */}
+                {data.totalEpisodes > 0 && (
+                  <div className="flex w-fit items-center gap-0.5 bg-foreground/20 p-2 py-1 text-xs font-bold backdrop-blur">
+                    <p className="leading-[10px]">{data.totalEpisodes}</p>
+                  </div>
+                )}
               </div>
               <Dot />
-              <div>{data.format}</div>
+              <div>{data.type}</div>
               <Dot />
-              <p>{data.duration}m</p>
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <WatchNowButton animeId={data.id} />
+              <WatchNowButton animeId={data.id as unknown as number} />
               <Button
                 variant={"ghost"}
                 className="rounded-full bg-white text-lg text-black hover:bg-white/80 hover:text-black"
@@ -89,84 +91,14 @@ function AnimePageData({ data }: { data: AnimeInfoResT }) {
           </div>
           <div>
             <strong>Japanese:</strong>
-            <p className="text-muted-foreground">{data.title.native || "_"}</p>
+            <p className="text-muted-foreground">{data.japaneseTitle || "_"}</p>
           </div>
-          <div className="flex gap-1">
-            <strong>Status:</strong>
-            <p className="text-muted-foreground">{data.status || "??"}</p>
-          </div>
+
           <div className="flex gap-1">
             <strong>Episodes:</strong>
-            <p className="text-muted-foreground">{data.episodes || "??"}</p>
+            <p className="text-muted-foreground">{data.totalEpisodes}</p>
           </div>
-          <div className="flex gap-1">
-            <strong>Average Score:</strong>
-            <p className="text-muted-foreground">
-              {data.score.averageScore / 100 || "??"}
-            </p>
-          </div>
-          <div className="flex gap-1">
-            <strong>Start In:</strong>
-            <p className="text-muted-foreground">
-              {data.startIn.year}/{data.startIn.month}/{data.startIn.day}
-            </p>
-          </div>
-          <div className="flex gap-1">
-            <strong>End In:</strong>
-            <p className="text-muted-foreground">
-              {data.endIn.year}/{data.endIn.month}/{data.endIn.day}
-            </p>
-          </div>
-          <div className="flex gap-1">
-            <strong>Year:</strong>
-            <p className="text-muted-foreground">{data.year}</p>
-          </div>
-          <div className="flex gap-1">
-            <strong>Popularity:</strong>
-            <p className="text-muted-foreground">{data.popularity}</p>
-          </div>
-          <div className="flex gap-1">
-            <strong>Tags:</strong>
-            <div className="flex flex-wrap gap-1">
-              {data.tags.length > 0 ? (
-                data.tags.slice(0, 5).map((tag) => (
-                  <Badge variant={"outline"} key={tag.id}>
-                    {tag.name}
-                  </Badge>
-                ))
-              ) : (
-                <p>Unknown</p>
-              )}
-            </div>
-          </div>
-          <div className="flex gap-1">
-            <strong>Season:</strong>
-            <p className="text-muted-foreground">{data.season}</p>
-          </div>
-          <div className="flex gap-1">
-            <strong>Genres:</strong>
-            <div className="flex flex-wrap gap-1">
-              {data.genres.map((genre) => (
-                <Badge variant={"outline"} key={genre}>
-                  {genre}
-                </Badge>
-              ))}
-            </div>
-          </div>
-          <div className="flex gap-1 pt-2">
-            <strong>Studios:</strong>
-            <div className="flex flex-wrap gap-1 text-muted-foreground">
-              {data.studios.length > 0 ? (
-                data.studios.slice(0, 4).map((studio) => (
-                  <Badge variant={"outline"} key={studio.name}>
-                    {studio.name}
-                  </Badge>
-                ))
-              ) : (
-                <p>Unknown</p>
-              )}
-            </div>
-          </div>
+
           <div className="md:hidden">
             <strong>Description:</strong>
             <p

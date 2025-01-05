@@ -42,7 +42,7 @@ body {
   }
   .dark {
     color-scheme: dark;
-    --background: 240 5% 15%;
+    --background: 230 13% 9%;
     --foreground: 0 0% 100%;
     --card: 0 0% 17%;
     --card-foreground: 210 20% 98%;
@@ -59,8 +59,8 @@ body {
     --destructive: 0 100% 50%;
     --destructive-foreground: 210 20% 98%;
     --border: 0 0% 16.9%;
-    --input: 0 0% 25%;
-    --ring: 216 12.2% 83.9%;
+    --input: 0 0% 50.9%;
+    --ring: 41 100% 79%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -76,7 +76,63 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+  /* Firefox (uncomment to work in Firefox, although other properties will not work!)  */
+  /** {
+  scrollbar-width: thin;
+  scrollbar-color: #397524 #DFE9EB;
+}*/
+
+  /* Chrome, Edge and Safari */
+  *::-webkit-scrollbar {
+    height: 10px;
+    width: 8px;
+  }
+  *::-webkit-scrollbar-track {
+    @apply bg-muted/80;
+  }
+
+  *::-webkit-scrollbar-track:hover {
+    @apply bg-muted;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    @apply rounded-none bg-secondary/80;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    @apply bg-secondary;
+  }
 }
 .vds-controls[data-visible] {
   border-radius: 0 !important;
+}
+
+.poster_image_container {
+  background: -moz-linear-gradient(
+    0deg,
+    #2424287f 0,
+    rgba(36, 36, 40, 0) 50%,
+    #2424287f 100%
+  );
+  background: -webkit-linear-gradient(
+    0deg,
+    #2424287f 0,
+    rgba(36, 36, 40, 0) 50%,
+    #2424287f 100%
+  );
+  background: linear-gradient(
+    0deg,
+    #2424287f 0,
+    rgba(36, 36, 40, 0) 50%,
+    #2424287f 100%
+  );
+}
+.poster_image {
+  mask-image: linear-gradient(
+    270deg,
+    transparent 0,
+    rgb(36, 36, 40) 30%,
+    rgb(36, 36, 40) 70%,
+    transparent
+  );
 }

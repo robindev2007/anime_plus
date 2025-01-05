@@ -1,7 +1,7 @@
 "use client";
 import AnimePlayer from "@/components/AnimePlayer";
 import Container from "@/components/Container";
-import { AnimeEpisodeRes, AnimeInfoResT, AnimeStreamRes } from "@/types/anime";
+import { AnimeStreamRes, Episode, SingleAnimeInfoRes } from "@/types/anime";
 import React, { useEffect, useState } from "react";
 import EpisodeList from "./EpisodeList";
 import { getAnimeStream } from "@/actions/anime/getAnimeStream";
@@ -14,28 +14,23 @@ import { useAnimeStore } from "@/zustand/AnimeState";
 function AnimeWatchPageData({
   animeInfo,
   episodes,
-  initialSubStream,
-  initialDubStream,
+  initialStreams,
+  initialEpisode,
 }: {
-  animeInfo: AnimeInfoResT;
-  episodes: AnimeEpisodeRes["episodes"];
-  initialSubStream?: AnimeStreamRes;
-  initialDubStream?: AnimeStreamRes;
+  animeInfo: SingleAnimeInfoRes;
+  episodes: SingleAnimeInfoRes["episodes"];
+  initialStreams?: AnimeStreamRes;
+  initialEpisode: Episode;
 }) {
   const defaultStreamsUrl =
-    initialDubStream?.stream?.multi?.main.url ||
-    initialSubStream?.stream?.multi?.main.url ||
+    initialStreams?.streams[1]?.data[0]?.sources[0].url ??
+    initialStreams?.streams[0]?.data[0]?.sources[0].url ??
     "";
-  const initialEpisode =
-    initialSubStream?.info?.episode || initialDubStream?.info?.episode || 1;
-
-  console.log(defaultStreamsUrl);
 
   const [videoUrl, setVideoUrl] = useState(defaultStreamsUrl);
   const [currentEpisode, setCurrentEpisode] = useState(initialEpisode);
-  const [subStream, setSubStreams] = useState(initialSubStream);
-  const [dubStream, setDubStreams] = useState(initialDubStream);
   const [loading, setLoading] = useState(false);
+  const [streams, setStreams] = useState(initialStreams);
 
   const updateHistory = useAnimeStore((state) => state.updateWatchHistoryById);
 
@@ -49,52 +44,37 @@ function AnimeWatchPageData({
     console.log("prevClick");
   };
 
-  const changeEpisode = (episode: number) => {
+  const changeEpisode = async (episode: Episode) => {
     setCurrentEpisode(episode);
     updateHistory(animeInfo.id, {
-      lastWatchEpisode: episode,
+      lastWatchEpisode: episode.number,
     });
 
-    history.pushState(null, "", `?ep=${episode}`);
+    setLoading(true);
+
+    const { data: newStreams } = await getAnimeStream(currentEpisode.id);
+
+    setStreams(newStreams ?? undefined);
+
+    const newStreamsUrl =
+      newStreams?.streams[1]?.data[0]?.sources[0].url ??
+      newStreams?.streams[0]?.data[0]?.sources[0].url ??
+      "";
+
+    setVideoUrl(newStreamsUrl);
+
+    setLoading(false);
+
+    history.pushState(null, "", `?ep=${episode.number}`);
   };
 
   useEffect(() => {
-    const getNewStream = async () => {
-      setLoading(true);
-
-      setDubStreams(undefined);
-
-      const newSubStreams = await getAnimeStream({
-        gogoId: animeInfo.id_provider.idGogo,
-        epId: currentEpisode.toString(),
-      });
-
-      setSubStreams(newSubStreams.data ?? undefined);
-
-      const newDubStreams = await getAnimeStream({
-        gogoId: animeInfo.id_provider.idGogoDub,
-        epId: currentEpisode.toString(),
-      });
-
-      setDubStreams(newDubStreams.data ?? undefined);
-
-      const newStreamsUrl =
-        newDubStreams?.data?.stream?.multi?.main.url ||
-        newSubStreams?.data?.stream?.multi?.main.url ||
-        "";
-
-      setVideoUrl(newStreamsUrl);
-      setLoading(false);
-    };
-
-    getNewStream();
-
     return () => {};
   }, [currentEpisode]);
 
   return (
     <Container className="relative h-fit flex-row-reverse overflow-hidden p-0 lg:flex">
-      <div className="z-20 mr-auto lg:w-[80%]">
+      <div className="z-20 mr-auto bg-background lg:w-[80%]">
         <div
           className={cn(
             "h-fit w-full pb-3 lg:space-y-3 lg:bg-muted",
@@ -112,8 +92,7 @@ function AnimeWatchPageData({
             <CurrentVideoDetails currentEpisode={currentEpisode} />
             <div className="h-full w-full py-3">
               <VideoServers
-                subStreams={subStream}
-                dubStreams={dubStream}
+                streams={streams}
                 setVideoUrl={setVideoUrl}
                 videoUrl={videoUrl}
               />
@@ -123,14 +102,14 @@ function AnimeWatchPageData({
 
         <div
           className={cn(
-            "left-0 top-0 h-full overflow-y-auto bg-muted lg:absolute",
+            "left-0 top-0 h-full lg:absolute lg:bg-muted-foreground/10",
             episodes.length > 50 ? "lg:w-[300px]" : "lg:w-[250px]",
           )}
         >
           <EpisodeList
             episodes={episodes}
             changeEpisode={changeEpisode}
-            currentEp={+currentEpisode}
+            currentEp={currentEpisode}
           />
         </div>
       </div>

@@ -70,7 +70,7 @@ function SearchAnime() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search Anime..."
-            className="rounded-none bg-foreground font-semibold text-background focus-visible:ring-transparent"
+            className="rounded-none border-none bg-foreground font-semibold text-background focus-visible:ring-transparent"
           />
 
           <div

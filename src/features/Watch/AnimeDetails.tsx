@@ -1,25 +1,16 @@
 import Dot from "@/components/ui/dot";
-import { AnimeInfoResT } from "@/types/anime";
+import { SingleAnimeInfoRes } from "@/types/anime";
 import Image from "next/image";
 import React from "react";
 
-function AnimeDetails({ animeInfo }: { animeInfo: AnimeInfoResT }) {
-  const animeTitle =
-    animeInfo.title.english ||
-    animeInfo.title.romaji ||
-    animeInfo.title.userPreferred ||
-    "";
-
-  const coverImage =
-    animeInfo.coverImage.extraLarge ||
-    animeInfo.coverImage.large ||
-    animeInfo.coverImage.medium;
+function AnimeDetails({ animeInfo }: { animeInfo: SingleAnimeInfoRes }) {
+  const animeTitle = animeInfo.title || animeInfo.japaneseTitle;
 
   return (
     <div className="h-full flex-col gap-5 overflow-y-auto p-3 md:flex lg:py-0">
       <div>
         <Image
-          src={coverImage}
+          src={animeInfo.image}
           height={800}
           width={800}
           alt={animeTitle}
@@ -34,22 +25,22 @@ function AnimeDetails({ animeInfo }: { animeInfo: AnimeInfoResT }) {
               {"HD"}
             </div>
             <div className="w-fit bg-primary-2 px-2 text-primary-foreground-2">
-              {animeInfo.dub ? "Dub" : "Sub"}
+              {animeInfo.hasDub ? "Dub" : "Sub"}
             </div>
           </div>
           <Dot />
-          <div>{animeInfo.format}</div>
-          <Dot />
-          <p>{animeInfo.duration}m</p>
+          <div>{animeInfo.type}</div>
         </div>
 
-        <p
-          tabIndex={1}
-          className="prose-zinc line-clamp-6 text-xs focus:line-clamp-none"
-          dangerouslySetInnerHTML={{
-            __html: animeInfo.description,
-          }}
-        />
+        <div className="">
+          <p
+            tabIndex={1}
+            className="prose-zinc max-h-32 overflow-y-auto text-xs"
+            dangerouslySetInnerHTML={{
+              __html: animeInfo.description,
+            }}
+          />
+        </div>
       </div>
     </div>
   );

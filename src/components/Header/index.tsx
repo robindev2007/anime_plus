@@ -6,8 +6,8 @@ import Link from "next/link";
 
 function Header() {
   return (
-    <div className="bg-card">
-      <Container className="relative flex items-center justify-between py-1">
+    <div className="sticky top-0 z-20 bg-background/95 backdrop-blur">
+      <Container className="relative flex items-center justify-between">
         <Link
           href={"/home"}
           className="flex items-center justify-between transition-opacity hover:opacity-90"

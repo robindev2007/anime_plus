@@ -1,16 +1,18 @@
 import React from "react";
 import AnimeList from ".";
-import { getRecommendedAnimeList } from "@/actions/anime/getRecommendedAnimeList";
+import { Recommendation } from "@/types/anime";
 
-async function RecommendedAnimeList({ animeId }: { animeId: string | number }) {
-  const { data: animeList } = await getRecommendedAnimeList({ animeId });
-
+async function RecommendedAnimeList({
+  animeList,
+}: {
+  animeList: Recommendation[];
+}) {
   return (
     <div className="space-y-1">
       <p className="text-lg text-primary">
         <strong>Recommended Anime&apos;s for you</strong>
       </p>
-      <AnimeList animeList={animeList?.results ?? []} />
+      <AnimeList animeList={animeList} />
     </div>
   );
 }

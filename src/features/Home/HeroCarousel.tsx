@@ -14,16 +14,17 @@ function HeroCarousel({
   animeList: TrendingAnimeRes["results"];
 }) {
   return (
-    <div>
+    <div className="relative">
       <Swiper
         spaceBetween={50}
         slidesPerView={1}
+        loop
         onSlideChange={() => console.log("slide change")}
         onSwiper={(swiper) => console.log(swiper)}
       >
-        {animeList.map((anime) => (
+        {animeList.map((anime, i) => (
           <SwiperSlide key={anime.id}>
-            <AnimeSlide anime={anime} />
+            <AnimeSlide anime={anime} spotlight={i + 1} />
           </SwiperSlide>
         ))}
       </Swiper>

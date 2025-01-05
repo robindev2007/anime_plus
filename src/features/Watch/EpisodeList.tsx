@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { AnimeEpisodeRes } from "@/types/anime";
+import { AnimeEpisodeRes, Episode, SingleAnimeInfoRes } from "@/types/anime";
 import React, { useState } from "react";
 import {
   Select,
@@ -17,12 +17,12 @@ function EpisodeList({
   changeEpisode,
   currentEp,
 }: {
-  episodes: AnimeEpisodeRes["episodes"];
-  changeEpisode: (episode: number) => void;
-  currentEp: number;
+  episodes: SingleAnimeInfoRes["episodes"];
+  changeEpisode: (episode: Episode) => void;
+  currentEp: Episode;
 }) {
   return (
-    <div className="grid h-full grid-cols-1 space-y-3 bg-background">
+    <div className="grid h-full grid-cols-1 space-y-3">
       {episodes.length > 50 ? (
         <EpisodeLargeMode
           episodes={episodes}
@@ -47,9 +47,9 @@ const EpisodeLargeMode = ({
   activeEpisode,
   changeEpisode,
 }: {
-  episodes: AnimeEpisodeRes["episodes"];
-  activeEpisode: number;
-  changeEpisode: (episode: number) => void;
+  episodes: SingleAnimeInfoRes["episodes"];
+  activeEpisode: Episode;
+  changeEpisode: (episode: Episode) => void;
 }) => {
   const data = episodes; // Example array with 1201 items
   const chunkSize = 100; // Number of items per chunk
@@ -64,11 +64,29 @@ const EpisodeLargeMode = ({
     data: chunk,
   }));
 
-  const [renderedEpisodes, setRenderedEpisodes] = useState(formattedData[0]);
+  const defaultRenderEpisodes: {
+    title: string;
+    data: Episode[];
+  } =
+    formattedData.find((episodes) => {
+      const ep = episodes.data.find((ep) => ep.number == activeEpisode.number);
+
+      if (ep?.number == activeEpisode.number) {
+        return true;
+      } else {
+        return false;
+      }
+    }) ?? formattedData[0];
+
+  const [renderedEpisodes, setRenderedEpisodes] = useState(
+    defaultRenderEpisodes,
+  );
+
+  console.log({ defaultRenderEpisodes });
 
   return (
     <div className="w-full space-y-2 p-3">
-      <div className="flex items-center justify-between gap-2">
+      <div className="top-0 flex items-center justify-between gap-0.5 bg-background">
         <div className="flex items-center gap-2">
           <FaList size={14} className="shrink-0 text-muted-foreground" />
           <p className="text-xs">EPI&apos;S</p>
@@ -110,12 +128,19 @@ const EpisodeLargeMode = ({
       <div className="grid shrink-0 grid-cols-5 gap-1 md:grid-cols-5">
         {renderedEpisodes.data.map((epi) => (
           <Button
-            key={epi.episode}
-            onClick={() => changeEpisode(epi.episode)}
-            size={"sm"}
-            variant={activeEpisode == epi.episode ? "default" : "secondary"}
+            key={epi.id}
+            onClick={() => changeEpisode(epi)}
+            variant={
+              epi.number == activeEpisode.number ? "default" : "secondary"
+            }
+            title={`${epi.isFiller ? "Filler Episode: " : ""}${epi.title}`}
+            className={cn(
+              "h-9 w-full rounded p-0 text-sm font-bold shadow-sm",
+              epi.isFiller &&
+                "bg-gradient-to-br from-orange-200/50 to-orange-400/40 text-muted",
+            )}
           >
-            {epi.episode}
+            {epi.number}
           </Button>
         ))}
       </div>
@@ -129,29 +154,40 @@ const EpisodeSmallMode = ({
   episodes,
 }: {
   episodes: AnimeEpisodeRes["episodes"];
-  activeEpisode: number;
-  changeEpisode: (episode: number) => void;
+  activeEpisode: Episode;
+  changeEpisode: (episode: Episode) => void;
 }) => {
   return (
-    <div className="py-2">
-      <p className="px-2 text-xs">List of episodes</p>
+    <div className="bg-muted/40 py-2">
+      <div className="py-2">
+        <p className="px-2 text-xs font-bold">List of episodes</p>
+      </div>
 
-      <div className="flex flex-col px-2 pt-1 md:px-0">
+      <div className="flex max-h-96 flex-col overflow-y-auto pt-1 md:px-0 lg:max-h-none">
         {episodes.map((episode) => (
           <button
-            onClick={() => changeEpisode(episode.episode)}
+            onClick={() => changeEpisode(episode)}
             key={episode.id}
             className={cn(
-              "line-clamp-1 flex items-center justify-between gap-4 p-3 py-2 text-xs odd:bg-secondary/30",
-              activeEpisode == episode.episode && "!bg-secondary text-primary",
+              "relative line-clamp-1 flex items-center justify-between gap-4 p-1.5 py-2.5 text-xs odd:bg-secondary/30",
+              episode.number == activeEpisode.number &&
+                "!bg-secondary text-primary",
             )}
           >
+            {episode.number == activeEpisode.number && (
+              <div className="absolute left-0 top-0 h-full w-1.5 bg-primary" />
+            )}
+            {episode.number == activeEpisode.number && (
+              <div className="absolute right-1 top-1/2 aspect-square -translate-y-1/2 scale-75 rounded-full bg-primary p-1">
+                <FaPlay className="pl-0.5 text-background" />
+              </div>
+            )}
             <div className="flex items-center gap-4">
               <span>{episode.episode}</span>
               <p className="line-clamp-1">{episode.title}</p>
             </div>
 
-            {activeEpisode == episode.episode && (
+            {episode.episode == activeEpisode.number && (
               <div className="aspect-square rounded-full bg-primary p-1 text-primary-foreground">
                 <FaPlay size={10} className="ml-0.5 mt-[1px]" />
               </div>

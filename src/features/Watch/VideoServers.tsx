@@ -1,77 +1,40 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { AnimeStreamRes, Main } from "@/types/anime";
+import { AnimeStreamRes } from "@/types/anime";
 
 export const VideoServers = ({
-  subStreams,
-  dubStreams,
+  streams,
   setVideoUrl,
   videoUrl,
 }: {
-  subStreams?: AnimeStreamRes;
-  dubStreams?: AnimeStreamRes;
+  streams?: AnimeStreamRes;
   setVideoUrl: (url: string) => void;
   videoUrl: string;
 }) => {
   return (
-    <div
-      className={cn(
-        "bg-card shadow-sm",
-        dubStreams &&
-          subStreams &&
-          "divide-y divide-dashed divide-foreground/20",
-      )}
-    >
-      <div className="flex items-center gap-3 p-3">
-        <SingleServer
-          streams={subStreams}
-          title={"Sub"}
-          activeUrl={videoUrl}
-          setVideoUrl={setVideoUrl}
-        />
-      </div>
-      {dubStreams?.stream?.multi && (
-        <div className="flex items-center gap-3 p-3">
-          <SingleServer
-            streams={dubStreams}
-            title={"Dub"}
-            activeUrl={videoUrl}
-            setVideoUrl={setVideoUrl}
-          />
-        </div>
-      )}
-    </div>
-  );
-};
-
-const SingleServer = ({
-  streams,
-  title,
-  activeUrl,
-  setVideoUrl,
-}: {
-  streams?: AnimeStreamRes;
-  title: string;
-  activeUrl: string;
-  setVideoUrl: (url: string) => void;
-}) => {
-  return (
-    <div className="flex items-center gap-7">
-      <strong>{title}:</strong>
-      <div className="flex gap-3">
-        {streams?.stream?.multi &&
-          Object.entries(streams.stream.multi).map(
-            ([key, value]: [string, Main]) => (
-              <Button
-                size={"sm"}
-                key={key}
-                onClick={() => setVideoUrl(value.url)}
-                variant={activeUrl == value.url ? "default" : "secondary"}
-              >
-                {key.toLocaleUpperCase()}
-              </Button>
+    <div className={cn("bg-card shadow-sm")}>
+      <div className="flex flex-col gap-3 p-3">
+        {streams?.streams.map(
+          (stream) =>
+            stream.data.length > 0 && (
+              <div key={stream.title} className="flex items-center gap-4">
+                <p>{stream.title}</p>
+                <div className="flex gap-4">
+                  {stream.data.map((source) =>
+                    source.sources.map((s, i) => (
+                      <Button
+                        key={s.url}
+                        onClick={() => setVideoUrl(s.url)}
+                        variant={s.url == videoUrl ? "default" : "secondary"}
+                      >
+                        {source.name} {i > 0 ? i + 1 : ""}
+                      </Button>
+                    )),
+                  )}
+                </div>
+              </div>
             ),
-          )}
+        )}
       </div>
     </div>
   );
