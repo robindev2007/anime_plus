@@ -12,12 +12,14 @@ import "@vidstack/react/player/styles/default/layouts/video.css";
 import { SeekForward10Icon } from "@vidstack/react/icons";
 import { cn } from "@/lib/utils";
 
+import ReactHlsPlayer from "react-hls-player";
+
 import {
   TbPlayerTrackPrevFilled,
   TbPlayerTrackNextFilled,
 } from "react-icons/tb";
 import { FaPlus } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const Player = ({
   videoUrl,
@@ -67,14 +69,25 @@ const Player = ({
 
   console.log(videoUrlWithProxy);
 
+  const ref = useRef<HTMLVideoElement>(null!);
+
   return (
     <div className="h-fit bg-muted">
-      <div className={cn("aspect-video overflow-hidden bg-muted")}>
+      <ReactHlsPlayer
+        playerRef={ref}
+        src={videoUrlWithProxy}
+        autoPlay={false}
+        controls={true}
+        width="100%"
+        height="auto"
+        className="aspect-video"
+      />
+      <div className={cn("hidden aspect-video overflow-hidden bg-muted")}>
         <MediaPlayer
           autoPlay={settings.autoPlay}
           storage={"player-state"}
           className="aspect-video !rounded-none !border-none"
-          src={loading ? "" : videoUrlWithProxy}
+          src={loading ? "" : videoUrl}
         >
           <MediaProvider className="!rounded-none" />
           <DefaultVideoLayout
