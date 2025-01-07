@@ -81,6 +81,7 @@ export async function GET(
     }
 
     // dub
+
     if (response[4].status == "fulfilled") {
       dubVidcloudData = response[4].value.data;
     }
