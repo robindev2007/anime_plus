@@ -164,7 +164,7 @@ const EpisodeSmallMode = ({
       </div>
 
       <div className="flex max-h-96 flex-col overflow-y-auto pt-1 md:px-0 lg:max-h-none">
-        {episodes.map((episode) => (
+        {episodes.map((episode, i) => (
           <button
             onClick={() => changeEpisode(episode)}
             key={episode.id}
@@ -183,8 +183,9 @@ const EpisodeSmallMode = ({
               </div>
             )}
             <div className="flex items-center gap-4">
-              <span>{episode.episode}</span>
-              <p className="line-clamp-1">{episode.title}</p>
+              <p className="line-clamp-1 px-2">
+                {i + 1}. {episode.title}
+              </p>
             </div>
 
             {episode.episode == activeEpisode.number && (

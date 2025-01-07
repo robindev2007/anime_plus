@@ -1,25 +1,19 @@
 "use server";
 
-import { getAnimeApi } from "@/lib/getAnime";
-import { AnimeSearchResultRes } from "@/types/anime";
+import { BASE_URL } from "@/lib/constance";
+import { AnimeSearchRes } from "@/types/anime";
+import axios from "axios";
 
 export const getAnimeSearchResult = async ({
-  limit = 20,
-  page = 1,
-  query,
+  search,
 }: {
-  query: string;
+  search: string;
   page: number;
-  limit: number;
 }) => {
   try {
-    const { data } = await getAnimeApi.get<AnimeSearchResultRes>("/search", {
-      params: {
-        q: query,
-        p: page,
-        limit,
-      },
-    });
+    const { data } = await axios.get<AnimeSearchRes>(
+      `${BASE_URL}/api/anime/search?searchQuery=${search}`,
+    );
 
     return { data };
   } catch (error) {

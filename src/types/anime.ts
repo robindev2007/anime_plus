@@ -293,35 +293,23 @@ export interface Nspl {
 }
 
 // search results
-
-export interface AnimeSearchResultRes {
-  code: number;
-  message: string;
-  page: SearchResultPage;
-  results: Result[];
-}
-
-export interface SearchResultPage {
+export interface AnimeSearchRes {
   currentPage: number;
   hasNextPage: boolean;
-  lastPage: number;
-  perPage: number;
-  total: number;
+  totalPages: number;
+  results: SearchResult[];
 }
 
-export interface Result {
-  averageScore?: number;
-  bannerImage?: string;
-  coverImage: CoverImage;
-  episodes?: number;
-  format?: string;
-  genres: string[];
-  id: number;
-  idMal: number;
-  nextAiringEpisode: string;
-  season?: string;
-  seasonYear?: number;
-  status: string;
-  tags: Tag[];
-  title: Title;
+export interface SearchResult {
+  id: string;
+  title: string;
+  url: string;
+  image: string;
+  duration: string;
+  japaneseTitle: string;
+  type: string;
+  nsfw: boolean;
+  sub: number;
+  dub: number;
+  episodes: number;
 }

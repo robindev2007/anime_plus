@@ -22,7 +22,7 @@ function WatchNowButton({ animeId }: { animeId: number }) {
 
   return (
     <Link href={`/watch/${animeId}?ep=${history?.lastWatchEpisode ?? 1}`}>
-      <Button className="rounded-full text-lg">
+      <Button className="h-auto flex-wrap rounded-full text-lg">
         <FaPlay />
         Watch Now
       </Button>

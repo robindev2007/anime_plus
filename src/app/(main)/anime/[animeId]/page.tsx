@@ -6,6 +6,24 @@ import AnimePageData from "@/features/Anime/AnimePageData";
 import { SingleAnimeInfoRes } from "@/types/anime";
 import React from "react";
 
+// or Dynamic metadata
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ animeId: string }>;
+}) {
+  const { animeId } = await params;
+
+  const { data } = await getAnimeInfo({ animeId });
+
+  const animeTitle = data?.title || data?.japaneseTitle;
+
+  return {
+    title: `Watch ${animeTitle} English Sub or Dub online Free`,
+    description: `Best site to watch ${animeTitle} English Sub/Dub online Free and download ${animeTitle} English Sub/Dub anime.`,
+  };
+}
+
 async function SingleAnimePage({
   params,
 }: {

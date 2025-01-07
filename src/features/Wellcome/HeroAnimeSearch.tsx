@@ -8,7 +8,7 @@ import { FaSearch } from "react-icons/fa";
 
 async function HeroAnimeSearch() {
   const { data: tradingAnimeList } = await getTrendingAnime({
-    page: 10,
+    page: 1,
   });
 
   console.log(tradingAnimeList);
@@ -36,7 +36,7 @@ async function HeroAnimeSearch() {
         <div>
           <div className="flex flex-wrap gap-x-2 gap-y-0.5 text-sm">
             <strong>Top Search:</strong>
-            {tradingAnimeList?.results.map((anime) => (
+            {tradingAnimeList?.results.splice(0, 15).map((anime) => (
               <Link
                 href={`/search?keyword=${anime.title}`}
                 key={anime.id}

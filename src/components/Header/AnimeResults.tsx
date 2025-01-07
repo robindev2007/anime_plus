@@ -1,4 +1,4 @@
-import { AnimeSearchResultRes } from "@/types/anime";
+import { AnimeSearchRes } from "@/types/anime";
 import React from "react";
 import Dot from "../ui/dot";
 import Link from "next/link";
@@ -8,7 +8,7 @@ function AnimeResults({
   animeList,
   setSearchActive,
 }: {
-  animeList: AnimeSearchResultRes["results"];
+  animeList: AnimeSearchRes["results"];
   setSearchActive: (active: boolean) => void;
 }) {
   return (
@@ -30,19 +30,13 @@ const SingleAnimeSearchResult = ({
   anime,
   setSearchActive,
 }: {
-  anime: AnimeSearchResultRes["results"][0];
+  anime: AnimeSearchRes["results"][0];
   setSearchActive: (active: boolean) => void;
 }) => {
-  const title =
-    anime.title.english ||
-    anime.title.romaji ||
-    anime.title.userPreferred ||
-    "";
+  const title = anime.title || anime.japaneseTitle || "";
 
-  const coverImage =
-    anime.coverImage.extraLarge ||
-    anime.coverImage.large ||
-    anime.coverImage.medium;
+  const coverImage = anime.image;
+
   return (
     <Link
       onClick={() => setSearchActive(false)}
@@ -60,9 +54,7 @@ const SingleAnimeSearchResult = ({
         <p className="text-sm font-semibold">{title}</p>
         <p className="text-xs font-semibold text-muted-foreground">{title}</p>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <p>{anime.seasonYear}</p>
-          <Dot />
-          <p>{anime.format}</p>
+          <p>{anime.type}</p>
           <Dot />
           <p>{anime.id}</p>
         </div>

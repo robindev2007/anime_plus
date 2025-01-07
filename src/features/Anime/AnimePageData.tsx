@@ -14,14 +14,12 @@ function AnimePageData({ data }: { data: SingleAnimeInfoRes }) {
     <Container className="space-y-2 p-0">
       <div className="flex h-full w-full flex-col flex-wrap space-y-6 md:flex-row md:flex-nowrap md:space-x-5 md:space-y-0">
         <div className="my-auto flex flex-col items-center gap-2 p-5 md:flex-row md:items-start md:gap-5 md:p-10">
-          <div
-            className="absolute left-1/2 top-0 -z-10 h-full w-full -translate-x-1/2 opacity-35 grayscale"
-            style={{
-              backgroundImage: `url(${data.image})`,
-              filter: "blur(40px)",
-              backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-            }}
+          <Image
+            src={data.image}
+            height={200}
+            width={200}
+            alt={data.title || data.japaneseTitle}
+            className="absolute left-1/2 top-0 -z-10 h-full w-full -translate-x-1/2 opacity-35 blur-lg grayscale"
           />
           <div className="z-10">
             <Image
@@ -62,11 +60,11 @@ function AnimePageData({ data }: { data: SingleAnimeInfoRes }) {
               <Dot />
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="flex gap-2">
               <WatchNowButton animeId={data.id as unknown as number} />
               <Button
                 variant={"ghost"}
-                className="rounded-full bg-white text-lg text-black hover:bg-white/80 hover:text-black"
+                className="h-auto flex-wrap rounded-full bg-white text-lg text-black hover:bg-white/80 hover:text-black"
               >
                 <FaPlus />
                 Add to List
@@ -74,8 +72,7 @@ function AnimePageData({ data }: { data: SingleAnimeInfoRes }) {
             </div>
             <div className="hidden md:inline">
               <p
-                tabIndex={1}
-                className="prose-zinc line-clamp-6 focus:line-clamp-none"
+                className="prose-zinc max-h-36 overflow-y-auto"
                 dangerouslySetInnerHTML={{
                   __html: data.description,
                 }}
@@ -102,7 +99,7 @@ function AnimePageData({ data }: { data: SingleAnimeInfoRes }) {
           <div className="md:hidden">
             <strong>Description:</strong>
             <p
-              className="prose-zinc text-muted-foreground"
+              className="prose-zinc max-h-36 overflow-y-auto text-muted-foreground"
               dangerouslySetInnerHTML={{
                 __html: data.description,
               }}

@@ -71,8 +71,7 @@ const Player = ({
     <div className="h-fit bg-muted">
       <div className={cn("aspect-video overflow-hidden bg-muted")}>
         <MediaPlayer
-          autoPlay={true}
-          // autoPlay={settings.autoPlay}
+          autoPlay={settings.autoPlay}
           storage={"player-state"}
           className="aspect-video !rounded-none !border-none"
           src={loading ? "" : videoUrlWithProxy}

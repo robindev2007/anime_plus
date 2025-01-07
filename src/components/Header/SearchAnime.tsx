@@ -6,7 +6,7 @@ import { Input } from "../ui/input";
 import AnimeResults from "./AnimeResults";
 import { useDebounce } from "use-debounce";
 import { getAnimeSearchResult } from "@/actions/anime/getSearchResult";
-import { AnimeSearchResultRes } from "@/types/anime";
+import { AnimeSearchRes } from "@/types/anime";
 import useClickOutside from "@/hooks/useClickOutside";
 import { cn } from "@/lib/utils";
 import Loader from "../loader/loader";
@@ -14,9 +14,9 @@ import Loader from "../loader/loader";
 function SearchAnime() {
   const [query, setQuery] = useState("");
   const [queryDebounce] = useDebounce(query, 1000);
-  const [animeResults, setAnimeResults] = useState<
-    AnimeSearchResultRes["results"]
-  >([]);
+  const [animeResults, setAnimeResults] = useState<AnimeSearchRes["results"]>(
+    [],
+  );
   const [loading, setLoading] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
@@ -32,9 +32,8 @@ function SearchAnime() {
 
     setLoading(true);
     const res = await getAnimeSearchResult({
-      limit: 5,
       page: 1,
-      query,
+      search: query,
     });
 
     setAnimeResults(res.data?.results ?? []);
@@ -48,6 +47,7 @@ function SearchAnime() {
   return (
     <div ref={searchRef as RefObject<HTMLDivElement | null>} className="z-10">
       <Button
+        title="Search anime"
         onClick={() => {
           setShowMobileSearch((prev) => !prev);
         }}
@@ -75,7 +75,7 @@ function SearchAnime() {
 
           <div
             className={cn(
-              "left-0 top-full w-full bg-card md:absolute",
+              "left-0 top-full max-h-[80vh] w-full overflow-y-auto bg-card md:absolute",
               searchActive ? "absolute" : "md:hidden",
             )}
           >
