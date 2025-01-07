@@ -63,32 +63,36 @@ const Player = ({
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const videoUrlWithProxy = `https://m3u8-proxy-dnuse.amvstr.me/${videoUrl}`;
+  // const videoUrlWithProxy = `https://m3u8-proxy-dnuse.amvstr.me/${videoUrl}`;
 
-  console.log(videoUrlWithProxy);
+  // console.log(videoUrlWithProxy);
 
   return (
     <div className="h-fit bg-muted">
       <div className={cn("aspect-video overflow-hidden bg-muted")}>
-        <MediaPlayer
-          autoPlay={settings.autoPlay}
-          storage={"player-state"}
-          className="aspect-video !rounded-none !border-none"
-          src={loading ? "" : videoUrlWithProxy}
-        >
-          <MediaProvider className="!rounded-none" />
-          <DefaultVideoLayout
-            slots={{
-              seekBackwardButton: (
-                <SeekButton className="vds-button" seconds={10}>
-                  <SeekForward10Icon className="vds-icon" />
-                </SeekButton>
-              ),
-            }}
-            colorScheme="dark"
-            icons={defaultLayoutIcons}
-          />
-        </MediaPlayer>
+        {loading ? (
+          "Loading"
+        ) : (
+          <MediaPlayer
+            autoPlay={settings.autoPlay}
+            storage={"player-state"}
+            className="aspect-video !rounded-none !border-none"
+            src={loading ? "" : videoUrl}
+          >
+            <MediaProvider className="!rounded-none" />
+            <DefaultVideoLayout
+              slots={{
+                seekBackwardButton: (
+                  <SeekButton className="vds-button" seconds={10}>
+                    <SeekForward10Icon className="vds-icon" />
+                  </SeekButton>
+                ),
+              }}
+              colorScheme="dark"
+              icons={defaultLayoutIcons}
+            />
+          </MediaPlayer>
+        )}
       </div>
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 p-3">
         <div className="flex gap-3">

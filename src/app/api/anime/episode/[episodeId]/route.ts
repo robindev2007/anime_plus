@@ -114,42 +114,42 @@ export async function GET(
       title: "Sub",
       data: [
         {
-          name: "VidCloud",
-          sources: subVidcloudData?.sources ?? [],
-        },
-        {
-          name: "StreamsData",
-          sources: subStreamsData?.sources ?? [],
-        },
-        {
           name: "VidsStreaming",
           sources: subVidstreamingData?.sources ?? [],
         },
-        {
-          name: "StreamtApe",
-          sources: subStreamtapeData?.sources ?? [],
-        },
+        // {
+        //   name: "VidCloud",
+        //   sources: subVidcloudData?.sources ?? [],
+        // },
+        // {
+        //   name: "StreamsData",
+        //   sources: subStreamsData?.sources ?? [],
+        // },
+        // {
+        //   name: "StreamtApe",
+        //   sources: subStreamtapeData?.sources ?? [],
+        // },
       ].filter((source) => source.sources.length > 0),
     },
     {
       title: "Dub",
       data: [
         {
-          name: "VidCloud",
-          sources: dubVidcloudData?.sources ?? [],
-        },
-        {
-          name: "StreamsData",
-          sources: dubStreamsData?.sources ?? [],
-        },
-        {
           name: "VidsStreaming",
           sources: dubVidstreamingData?.sources ?? [],
         },
-        {
-          name: "StreamtApe",
-          sources: dubStreamtapeData?.sources ?? [],
-        },
+        // {
+        //   name: "VidCloud",
+        //   sources: dubVidcloudData?.sources ?? [],
+        // },
+        // {
+        //   name: "StreamsData",
+        //   sources: dubStreamsData?.sources ?? [],
+        // },
+        // {
+        //   name: "StreamtApe",
+        //   sources: dubStreamtapeData?.sources ?? [],
+        // },
       ].filter((source) => source.sources.length > 0),
     },
   ].filter((data) => data.data.length > 0);
