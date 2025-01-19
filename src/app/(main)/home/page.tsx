@@ -8,7 +8,6 @@ import TrendingAnimeList from "@/features/Home/TrendingAnimeList";
 export default async function Home() {
   const { data } = await getHomePageData();
 
-  console.log(data);
   return (
     <div className="space-y-3">
       <HeroCarousel animeList={data?.data.spotlightAnimes ?? []} />

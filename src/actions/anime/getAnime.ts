@@ -85,8 +85,6 @@ export const getAnimeSearch = async ({
       `/api/v2/hianime/search?q=${query}&page=${page}`,
     );
 
-    console.log(data);
-
     return { data };
   } catch (error) {
     console.error(error);

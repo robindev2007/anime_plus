@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   title: WEBSITE_DATA.TITLE,
   description: WEBSITE_DATA.DESCRIPTION,
   keywords: WEBSITE_DATA.KEYWORDS,
+  verification: {
+    google: "OEQvQP6qiC2MKDr_urjU0iEC4GP1uADosYdu0oplNCY",
+  },
 };
 
 export default function RootLayout({
