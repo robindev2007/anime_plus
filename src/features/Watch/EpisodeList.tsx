@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { AnimeEpisodeRes, Episode, SingleAnimeInfoRes } from "@/types/anime";
+import { AnimeEpisodes, Episode } from "@/types/anime";
 import React, { useState } from "react";
 import {
   Select,
@@ -17,9 +17,9 @@ function EpisodeList({
   changeEpisode,
   currentEp,
 }: {
-  episodes: SingleAnimeInfoRes["episodes"];
+  episodes: AnimeEpisodes["episodes"];
   changeEpisode: (episode: Episode) => void;
-  currentEp: Episode;
+  currentEp: AnimeEpisodes["episodes"][0];
 }) {
   return (
     <div className="grid h-full grid-cols-1 space-y-3">
@@ -47,7 +47,7 @@ const EpisodeLargeMode = ({
   activeEpisode,
   changeEpisode,
 }: {
-  episodes: SingleAnimeInfoRes["episodes"];
+  episodes: AnimeEpisodes["episodes"];
   activeEpisode: Episode;
   changeEpisode: (episode: Episode) => void;
 }) => {
@@ -128,7 +128,7 @@ const EpisodeLargeMode = ({
       <div className="grid shrink-0 grid-cols-5 gap-1 md:grid-cols-5">
         {renderedEpisodes.data.map((epi) => (
           <Button
-            key={epi.id}
+            key={epi.episodeId}
             onClick={() => changeEpisode(epi)}
             variant={
               epi.number == activeEpisode.number ? "default" : "secondary"
@@ -153,7 +153,7 @@ const EpisodeSmallMode = ({
   changeEpisode,
   episodes,
 }: {
-  episodes: AnimeEpisodeRes["episodes"];
+  episodes: AnimeEpisodes["episodes"];
   activeEpisode: Episode;
   changeEpisode: (episode: Episode) => void;
 }) => {
@@ -167,7 +167,7 @@ const EpisodeSmallMode = ({
         {episodes.map((episode, i) => (
           <button
             onClick={() => changeEpisode(episode)}
-            key={episode.id}
+            key={episode.episodeId}
             className={cn(
               "relative line-clamp-1 flex items-center justify-between gap-4 p-1.5 py-2.5 text-xs odd:bg-secondary/30",
               episode.number == activeEpisode.number &&
@@ -188,7 +188,7 @@ const EpisodeSmallMode = ({
               </p>
             </div>
 
-            {episode.episode == activeEpisode.number && (
+            {episode.number == activeEpisode.number && (
               <div className="aspect-square rounded-full bg-primary p-1 text-primary-foreground">
                 <FaPlay size={10} className="ml-0.5 mt-[1px]" />
               </div>

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Metadata } from "next";
 import { WEBSITE_DATA } from "@/lib/constance";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${inter.className} antialiased`}>
+        <Toaster />
         <main className="flex h-full min-h-screen flex-1 flex-col">
           {children}
         </main>

@@ -1,99 +1,82 @@
 "use client";
-import React, { RefObject, useEffect, useState } from "react";
-import { Button } from "../ui/button";
+import React, { Ref, useEffect, useState } from "react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
-import { Input } from "../ui/input";
-import AnimeResults from "./AnimeResults";
 import { useDebounce } from "use-debounce";
-import { getAnimeSearchResult } from "@/actions/anime/getSearchResult";
-import { AnimeSearchRes } from "@/types/anime";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { getAnimeSearchSuggestions } from "@/actions/anime/getAnime";
+import { SearchSuggestion } from "@/types/anime";
+import AnimeSearchResults from "./AnimeSearchResults";
+import { Spinner } from "../ui/spinner";
 import useClickOutside from "@/hooks/useClickOutside";
-import { cn } from "@/lib/utils";
-import Loader from "../loader/loader";
 
 function SearchAnime() {
-  const [query, setQuery] = useState("");
-  const [queryDebounce] = useDebounce(query, 1000);
-  const [animeResults, setAnimeResults] = useState<AnimeSearchRes["results"]>(
-    [],
-  );
-  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQueryDebounce] = useDebounce(searchQuery, 300);
   const [searchActive, setSearchActive] = useState(false);
-  const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [searchResults, setSearchResults] = useState<SearchSuggestion[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const searchRef = useClickOutside(() => {
-    setShowMobileSearch(false);
+  const searchContainerRef = useClickOutside(() => {
+    console.log("Outside");
     setSearchActive(false);
   });
 
-  const getAnimeSearch = async () => {
-    if (loading) return;
-    if (queryDebounce === "") return;
-
+  const handleSearch = async () => {
     setLoading(true);
-    const res = await getAnimeSearchResult({
-      page: 1,
-      search: query,
-    });
+    setSearchResults([]);
 
-    setAnimeResults(res.data?.results ?? []);
+    const { data } = await getAnimeSearchSuggestions(searchQuery);
+
+    setSearchResults(data?.data.suggestions ?? []);
+
     setLoading(false);
   };
 
   useEffect(() => {
-    getAnimeSearch();
-  }, [queryDebounce]);
+    handleSearch();
+  }, [searchQueryDebounce]);
 
   return (
-    <div ref={searchRef as RefObject<HTMLDivElement | null>} className="z-10">
+    <div>
       <Button
-        title="Search anime"
-        onClick={() => {
-          setShowMobileSearch((prev) => !prev);
-        }}
-        size={"icon"}
-        className="z-50 size-8 text-primary hover:text-primary md:hidden"
         variant={"ghost"}
+        size={"icon"}
+        onClick={() => setSearchActive((prev) => !prev)}
       >
         <FaMagnifyingGlass />
       </Button>
 
-      <div className="">
-        <div
-          className={cn(
-            "relative left-0 top-full z-20 w-full border-t bg-background p-3 py-2 md:min-w-[20rem] md:p-0 md:py-0",
-            showMobileSearch ? "absolute md:relative" : "hidden md:block",
-          )}
-        >
-          <Input
-            onFocus={() => setSearchActive(true)}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search Anime..."
-            className="rounded-none border-none bg-foreground font-semibold text-background focus-visible:ring-transparent"
-          />
+      {/* Search input */}
 
-          <div
-            className={cn(
-              "left-0 top-full max-h-[80vh] w-full overflow-y-auto bg-card md:absolute",
-              searchActive ? "absolute" : "md:hidden",
-            )}
-          >
-            {!loading ? (
-              animeResults.length > 0 && (
-                <AnimeResults
-                  setSearchActive={setSearchActive}
-                  animeList={animeResults}
-                />
-              )
-            ) : (
-              <div className="h-40">
-                <Loader />
-              </div>
-            )}
+      {searchActive && (
+        <form
+          ref={searchContainerRef as Ref<HTMLFormElement>}
+          action={"/search"}
+          className="absolute left-0 top-full w-full space-y-2 bg-background"
+        >
+          <div className="p-2">
+            <Input
+              required
+              name="query"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search animes..."
+              className="text-balance border-none bg-foreground text-muted focus-visible:ring-transparent"
+            />
           </div>
-        </div>
-      </div>
+          {loading ? (
+            <div className="flex items-center justify-center pb-3">
+              <Spinner />
+            </div>
+          ) : (
+            <AnimeSearchResults
+              setSearchActive={(value) => setSearchActive(value)}
+              animes={searchResults}
+            />
+          )}
+        </form>
+      )}
     </div>
   );
 }

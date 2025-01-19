@@ -1,5 +1,4 @@
-import { Intro, Outro, Source, Subtitle } from "@/types/anime";
-import axios from "axios";
+"use server";
 
 export interface DataResponse {
   intro: Intro;
@@ -8,18 +7,99 @@ export interface DataResponse {
   subtitles: Subtitle[];
 }
 
-export async function GET(
-  _: Request,
-  {
-    params,
-  }: {
-    params: Promise<{ episodeId: string }>;
-  },
-) {
-  const { episodeId } = await params;
+import {
+  AnimeEpisodesRes,
+  AnimeInfoRes,
+  AnimeSearchRes,
+  AnimeSearchSuggestionRes,
+  HomePageAnimeRes,
+  Intro,
+  Outro,
+  Source,
+  Subtitle,
+} from "@/types/anime";
+import { AnimeAPi } from "@/utils/utils";
+import axios from "axios";
+
+export const getHomePageData = async () => {
+  try {
+    const { data } = await AnimeAPi.get<{ data: HomePageAnimeRes }>(
+      "/api/v2/hianime/home",
+    );
+
+    return { data };
+  } catch (error) {
+    console.error(error);
+    return { error: "Something went wrong" };
+  }
+};
+
+export const getAnimeInfo = async (animeId: string) => {
+  try {
+    const { data } = await AnimeAPi.get<AnimeInfoRes>(
+      `/api/v2/hianime/anime/${animeId}`,
+    );
+
+    return { data };
+  } catch (error) {
+    console.error(error);
+    return { error: "Something went wrong" };
+  }
+};
+
+export const getAnimeEpisodes = async (animeId: string) => {
+  try {
+    const { data } = await AnimeAPi.get<AnimeEpisodesRes>(
+      `/api/v2/hianime/anime/${animeId}/episodes`,
+    );
+
+    return { data };
+  } catch (error) {
+    console.error(error);
+    return { error: "Something went wrong" };
+  }
+};
+
+export const getAnimeSearchSuggestions = async (query: string) => {
+  try {
+    const { data } = await AnimeAPi.get<AnimeSearchSuggestionRes>(
+      `/api/v2/hianime/search/suggestion?q=${query}`,
+    );
+
+    return { data };
+  } catch (error) {
+    console.error(error);
+    return { error: "Something went wrong" };
+  }
+};
+
+export const getAnimeSearch = async ({
+  query,
+  page = 1,
+}: {
+  query: string;
+  page?: number;
+}) => {
+  try {
+    const { data } = await AnimeAPi.get<AnimeSearchRes>(
+      `/api/v2/hianime/search?q=${query}&page=${page}`,
+    );
+
+    console.log(data);
+
+    return { data };
+  } catch (error) {
+    console.error(error);
+    return { error: "Something went wrong" };
+  }
+};
+
+export const getAnimeStream = async (baseEpId: string) => {
+  const episodeId =
+    baseEpId.replaceAll("?", "$").replace("ep=", "episode$") + "$both";
 
   if (!episodeId || !episodeId.length) {
-    return Response.json({ error: "No id provided!" });
+    return { error: "No id provided!" };
   }
 
   const subId = episodeId.replace("both", "sub");
@@ -95,7 +175,8 @@ export async function GET(
       dubStreamtapeData = response[7].value.data;
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    return { error: "Something went wrong!", data: undefined };
   }
 
   const intro =
@@ -178,8 +259,8 @@ export async function GET(
   };
 
   if (streamData.streams.length == 0) {
-    return Response.json({ error: "No streams found" });
+    return { error: "No streams found" };
   }
 
-  return Response.json(streamData);
-}
+  return { data: streamData };
+};

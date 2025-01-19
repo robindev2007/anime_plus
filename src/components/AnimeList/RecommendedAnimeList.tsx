@@ -1,11 +1,11 @@
 import React from "react";
 import AnimeList from ".";
-import { Recommendation } from "@/types/anime";
+import { RelatedAnime } from "@/types/anime";
 
 async function RecommendedAnimeList({
   animeList,
 }: {
-  animeList: Recommendation[];
+  animeList: RelatedAnime[];
 }) {
   return (
     <div className="space-y-1">

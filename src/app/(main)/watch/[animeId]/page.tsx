@@ -1,5 +1,8 @@
-import { getAnimeInfo } from "@/actions/anime/getAnimeInfo";
-import { getAnimeStream } from "@/actions/anime/getAnimeStream";
+import {
+  getAnimeEpisodes,
+  getAnimeInfo,
+  getAnimeStream,
+} from "@/actions/anime/getAnime";
 import Container from "@/components/Container";
 import AnimeWatchPageData from "@/features/Watch/AnimeWatchPageData";
 import Image from "next/image";
@@ -14,9 +17,9 @@ export async function generateMetadata({
 }) {
   const { animeId } = await params;
 
-  const { data } = await getAnimeInfo({ animeId });
+  const { data } = await getAnimeInfo(animeId);
 
-  const animeTitle = data?.title || data?.japaneseTitle;
+  const animeTitle = data?.data.anime.info.name;
 
   return {
     title: `Watch ${animeTitle} English Sub or Dub online Free`,
@@ -34,32 +37,40 @@ async function WatchPage({
   const { animeId } = await params;
   const ep = (await searchParams).ep ?? 1;
 
-  const { data: animeData } = await getAnimeInfo({
-    animeId,
-  });
+  const { data: animeData } = await getAnimeInfo(animeId);
+  const { data: animeEpisodes } = await getAnimeEpisodes(animeId);
 
-  if (!animeData) return notFound();
+  if (!animeData || !animeEpisodes) return notFound();
 
-  const currentEpisode = animeData.episodes[+ep - 1];
+  console.log(animeEpisodes);
+
+  const currentEpisode =
+    animeEpisodes.data.episodes.find((epa) => epa.number == +ep) ??
+    animeEpisodes.data.episodes[0];
 
   console.log(currentEpisode);
 
-  const { data: streams } = await getAnimeStream(currentEpisode.id);
+  // console.log(currentEpisode);
+
+  const { data: streams } = await getAnimeStream(currentEpisode.episodeId);
+
+  console.log({ streams });
 
   return (
     <div className="relative overflow-hidden lg:p-5">
       <Image
-        src={animeData?.image}
+        src={animeData?.data.anime.info.poster}
         height={200}
         width={200}
-        alt={animeData.title || animeData.japaneseTitle}
+        alt={animeData?.data.anime.info.name}
         className="absolute left-1/2 top-0 -z-10 h-full w-full -translate-x-1/2 opacity-35 blur-2xl grayscale-[40%] lg:flex"
       />
+
       <Container className="p-0">
         <AnimeWatchPageData
-          animeInfo={animeData}
-          episodes={animeData.episodes || []}
-          initialStreams={streams || undefined}
+          animeInfo={animeData.data}
+          episodes={animeEpisodes?.data.episodes ?? []}
+          initialStreams={streams}
           initialEpisode={currentEpisode}
         />
       </Container>

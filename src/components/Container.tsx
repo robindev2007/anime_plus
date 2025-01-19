@@ -9,7 +9,7 @@ type ContainerProps = ComponentPropsWithoutRef<"div"> & {
 function Container({ children, className, ...props }: ContainerProps) {
   return (
     <div
-      className={cn("mx-auto w-full max-w-screen-xl p-2", className)}
+      className={cn("mx-auto w-full max-w-screen-2xl p-2", className)}
       {...props}
     >
       {children}

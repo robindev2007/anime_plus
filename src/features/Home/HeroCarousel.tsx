@@ -6,15 +6,13 @@ import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
 import "swiper/css";
 import AnimeSlide from "./AnimeSlide";
-import { TrendingAnimeRes } from "@/types/anime";
+import { SpotlightAnime } from "@/types/anime";
 
-function HeroCarousel({
-  animeList,
-}: {
-  animeList: TrendingAnimeRes["results"];
-}) {
+function HeroCarousel({ animeList }: { animeList: SpotlightAnime[] }) {
+  console.log(animeList);
+
   return (
-    <div className="relative">
+    <div className="relative lg:px-3">
       <Swiper
         spaceBetween={50}
         slidesPerView={1}
@@ -22,11 +20,12 @@ function HeroCarousel({
         onSlideChange={() => console.log("slide change")}
         onSwiper={(swiper) => console.log(swiper)}
       >
-        {animeList.map((anime, i) => (
-          <SwiperSlide key={anime.id}>
-            <AnimeSlide anime={anime} spotlight={i + 1} />
-          </SwiperSlide>
-        ))}
+        {animeList &&
+          animeList.map((anime) => (
+            <SwiperSlide key={anime.id}>
+              <AnimeSlide anime={anime} />
+            </SwiperSlide>
+          ))}
       </Swiper>
     </div>
   );

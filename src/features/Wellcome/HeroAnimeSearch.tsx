@@ -1,4 +1,4 @@
-import { getTrendingAnime } from "@/actions/anime/getTrendingAnime";
+import { getHomePageData } from "@/actions/anime/getAnime";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
@@ -7,11 +7,9 @@ import React from "react";
 import { FaSearch } from "react-icons/fa";
 
 async function HeroAnimeSearch() {
-  const { data: tradingAnimeList } = await getTrendingAnime({
-    page: 1,
-  });
+  const { data } = await getHomePageData();
 
-  console.log(tradingAnimeList);
+  console.log(data);
 
   return (
     <div className="flex gap-3">
@@ -36,15 +34,16 @@ async function HeroAnimeSearch() {
         <div>
           <div className="flex flex-wrap gap-x-2 gap-y-0.5 text-sm">
             <strong>Top Search:</strong>
-            {tradingAnimeList?.results.splice(0, 15).map((anime) => (
-              <Link
-                href={`/search?keyword=${anime.title}`}
-                key={anime.id}
-                className="line-clamp-1 truncate text-nowrap text-muted-foreground hover:text-primary"
-              >
-                {anime.title?.slice(0, 40)},
-              </Link>
-            ))}
+            {data?.data.trendingAnimes &&
+              data?.data.trendingAnimes.map((anime) => (
+                <Link
+                  href={`/search?keyword=${anime.name}`}
+                  key={anime.id}
+                  className="line-clamp-1 truncate text-nowrap text-muted-foreground transition-colors hover:text-primary"
+                >
+                  {anime.name?.slice(0, 40)},
+                </Link>
+              ))}
           </div>
         </div>
       </div>

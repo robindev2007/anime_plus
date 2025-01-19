@@ -1,12 +1,22 @@
 {
   "cSpell.words": [
     "Anify",
+    "anilist",
+    "Animes",
     "consumet",
     "Gogoanime",
+    "hianime",
+    "jname",
+    "malscore",
+    "nextair",
+    "Nspl",
+    "Pahe",
+    "romaji",
     "streamtape",
     "vidcloud",
     "vidstack",
     "vidstreaming",
     "zoro"
-  ]
+  ],
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }

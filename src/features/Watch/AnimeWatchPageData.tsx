@@ -1,15 +1,21 @@
 "use client";
+import { toast } from "sonner";
 import AnimePlayer from "@/components/AnimePlayer";
 import Container from "@/components/Container";
-import { AnimeStreamRes, Episode, SingleAnimeInfoRes } from "@/types/anime";
+import {
+  AnimeEpisodes,
+  AnimeInfoRes,
+  AnimeStreamRes,
+  Episode,
+} from "@/types/anime";
 import React, { useEffect, useState } from "react";
 import EpisodeList from "./EpisodeList";
-import { getAnimeStream } from "@/actions/anime/getAnimeStream";
 import CurrentVideoDetails from "./CurrentVideoDetails";
 import AnimeDetails from "./AnimeDetails";
 import { VideoServers } from "./VideoServers";
 import { cn } from "@/lib/utils";
 import { useAnimeStore } from "@/zustand/AnimeState";
+import { getAnimeStream } from "@/actions/anime/getAnime";
 
 function AnimeWatchPageData({
   animeInfo,
@@ -17,10 +23,10 @@ function AnimeWatchPageData({
   initialStreams,
   initialEpisode,
 }: {
-  animeInfo: SingleAnimeInfoRes;
-  episodes: SingleAnimeInfoRes["episodes"];
+  animeInfo: AnimeInfoRes["data"];
+  episodes: AnimeEpisodes["episodes"];
   initialStreams?: AnimeStreamRes;
-  initialEpisode: Episode;
+  initialEpisode: AnimeEpisodes["episodes"][0];
 }) {
   const defaultStreamsUrl =
     initialStreams?.streams[1]?.data[0]?.sources[0].url ??
@@ -46,19 +52,25 @@ function AnimeWatchPageData({
 
   const changeEpisode = async (episode: Episode) => {
     setCurrentEpisode(episode);
-    updateHistory(animeInfo.id, {
+    updateHistory(animeInfo.anime.info.id, {
       lastWatchEpisode: episode.number,
     });
 
     setLoading(true);
 
-    const { data: newStreams } = await getAnimeStream(currentEpisode.id);
+    console.log(episode);
+
+    const { data: newStreams, error } = await getAnimeStream(episode.episodeId);
 
     setStreams(newStreams ?? undefined);
 
+    if (error) {
+      toast.error(error);
+    }
+
     const newStreamsUrl =
-      newStreams?.streams[1]?.data[0]?.sources[0].url ??
-      newStreams?.streams[0]?.data[0]?.sources[0].url ??
+      newStreams?.streams[0].data[0].sources[0].url ??
+      newStreams?.streams[1].data[0].sources[0].url ??
       "";
 
     setVideoUrl(newStreamsUrl);

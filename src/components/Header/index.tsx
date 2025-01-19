@@ -6,7 +6,7 @@ import Link from "next/link";
 
 function Header() {
   return (
-    <div className="sticky top-0 z-20 bg-background/95 backdrop-blur">
+    <div className="sticky top-0 z-30 bg-background/95 backdrop-blur">
       <Container className="relative flex items-center justify-between">
         <Link
           href={"/home"}
@@ -20,9 +20,8 @@ function Header() {
             className="h-5 w-fit min-w-20"
           />
         </Link>
-        <div>
-          <SearchAnime />
-        </div>
+
+        <SearchAnime />
       </Container>
     </div>
   );

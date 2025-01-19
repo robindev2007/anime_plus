@@ -1,7 +1,7 @@
 import { ANIME } from "@consumet/extensions";
 
 export async function GET(
-  request: Request,
+  _: Request,
   {
     params,
   }: {
