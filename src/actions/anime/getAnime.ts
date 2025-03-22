@@ -266,8 +266,3 @@ export const getAnimeStream = async (baseEpId: string) => {
 
   return { data: streamData };
 };
-
-const l = [
-  "https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=spy-x-family-17977$episode$92049$sub",
-  "https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=spy-x-family-17977$episode$92048$sub=vidcloud",
-];
