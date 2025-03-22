@@ -113,34 +113,38 @@ export const getAnimeStream = async (baseEpId: string) => {
   let dubVidstreamingData: DataResponse | null = null;
   let dubStreamtapeData: DataResponse | null = null;
 
+  console.log({
+    a: `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${subId}=vidcloud`,
+  });
+
   try {
     const response = await Promise.allSettled([
       // get sub
       axios.get(
-        `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${subId}&server=vidcloud`,
+        `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${subId}=vidcloud`,
       ),
       axios.get(
-        `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${subId}&server=streamsb`,
+        `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${subId}=streamsb`,
       ),
       axios.get(
-        `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${subId}&server=vidstreaming`,
+        `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${subId}=vidstreaming`,
       ),
       axios.get(
-        `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${subId}&server=streamtape`,
+        `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${subId}=streamtape`,
       ),
 
       // get dub
       axios.get(
-        `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${dubId}&server=vidcloud`,
+        `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${dubId}=vidcloud`,
       ),
       axios.get(
-        `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${dubId}&server=streamsb`,
+        `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${dubId}=streamsb`,
       ),
       axios.get(
-        `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${dubId}&server=vidstreaming`,
+        `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${dubId}=vidstreaming`,
       ),
       axios.get(
-        `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${dubId}&server=streamtape`,
+        `https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=${dubId}=streamtape`,
       ),
     ]);
 
@@ -262,3 +266,8 @@ export const getAnimeStream = async (baseEpId: string) => {
 
   return { data: streamData };
 };
+
+const l = [
+  "https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=spy-x-family-17977$episode$92049$sub",
+  "https://consumetapi-azure.vercel.app/anime/zoro/watch?episodeId=spy-x-family-17977$episode$92048$sub=vidcloud",
+];

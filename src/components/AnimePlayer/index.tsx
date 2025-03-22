@@ -33,25 +33,25 @@ const Player = ({
   loading: boolean;
 }) => {
   const [settings, setSettings] = useState({
-    autoPlay: false,
-    autoNext: false,
-    autoSkip: false,
+    autoPlay: true,
+    autoNext: true,
+    autoSkip: true,
   });
 
-  // Load settings from localStorage on mount
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+  // // Load settings from localStorage on mount
+  // useEffect(() => {
+  //   if (typeof window === "undefined") return;
 
-    const savedSettings = JSON.parse(
-      localStorage.getItem("playerSettings") || "{}",
-    );
+  //   const savedSettings = JSON.parse(
+  //     localStorage.getItem("playerSettings") || "{}",
+  //   );
 
-    setSettings({
-      autoPlay: savedSettings.autoPlay || false,
-      autoNext: savedSettings.autoNext || false,
-      autoSkip: savedSettings.autoSkip || false,
-    });
-  }, []);
+  //   setSettings({
+  //     autoPlay: savedSettings.autoPlay || false,
+  //     autoNext: savedSettings.autoNext || false,
+  //     autoSkip: savedSettings.autoSkip || false,
+  //   });
+  // }, []);
 
   // Save settings to localStorage whenever they change
   useEffect(() => {
@@ -77,7 +77,11 @@ const Player = ({
             autoPlay={settings.autoPlay}
             storage={"player-state"}
             className="aspect-video !rounded-none !border-none"
-            src={loading ? "" : videoUrl}
+            src={
+              loading
+                ? ""
+                : "https://aniversehd.com/api/v1/streamingProxy?url=" + videoUrl
+            }
           >
             <MediaProvider className="!rounded-none" />
             <DefaultVideoLayout
